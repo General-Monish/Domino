@@ -7,8 +7,9 @@ public class movement : MonoBehaviour
 {
    // float x, y;
 
-  [SerializeField]  public float Speed;
-    private Vector2 MoveInput;
+  [SerializeField]  private float Speed;
+  [SerializeField]  private float rotationspeed;
+
 
     // Start is called before the first frame update
     void Start()
@@ -19,20 +20,22 @@ public class movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Move();
+        
         //x = Input.GetAxisRaw("Horizontal");
         //transform.Translate(new Vector3(1, 0, 0) * x * Speed*Time.deltaTime);
 
         //y = Input.GetAxis("Vertical");
         //transform.Translate(new Vector3(0, 0, 1) * y * Speed * Time.deltaTime);
+    }
 
-        Vector3 moveDir = new Vector3(MoveInput.x, 0f, MoveInput.y);
-        transform.position += moveDir*Speed*Time.deltaTime;
+    private void FixedUpdate()
+    {
+        Move();
     }
 
     private Vector2 Move()
     {
-         MoveInput = new Vector2(0, 0);
+       Vector2  MoveInput = new Vector2(0, 0);
         if (Input.GetKey(KeyCode.W))
         {
             
@@ -54,6 +57,12 @@ public class movement : MonoBehaviour
             MoveInput.x = +1;
         }
         MoveInput = MoveInput.normalized;
+
+        Vector3 moveDir = new Vector3(MoveInput.x, 0f, MoveInput.y);
+        transform.position += moveDir * Speed * Time.deltaTime;
+
+        // Rotation
+        transform.forward = Vector3.Slerp(transform.forward,moveDir,Time.deltaTime*rotationspeed);
         return MoveInput;
     }
 }
